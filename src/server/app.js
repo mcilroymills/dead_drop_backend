@@ -18,6 +18,13 @@ var users = require('./routes/users.js');
 // *** express instance *** //
 var app = express();
 
+//CORS middleware
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // *** config middleware *** //
 app.use(logger('dev'));
 app.use(bodyParser.json());
