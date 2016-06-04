@@ -18,12 +18,12 @@ var users = require('./routes/users.js');
 // *** express instance *** //
 var app = express();
 
-/*/CORS middleware
+//CORS middleware
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});*/
+});
 
 // *** config middleware *** //
 app.use(logger('dev'));
@@ -45,9 +45,9 @@ app.use('/users', users);
 app.use(function(req, res, next) {
 
   // check header or url parameters or post parameters for token
-  //var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'] || req.query['x-access-token'];
+  var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'] || req.query['x-access-token'];
 
-  var token = req.query['x-access-token']|| req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'];
+  //var token = req.query['x-access-token']|| req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'];
   // decode token
   if (token) {
     // verifies secret and checks exp
