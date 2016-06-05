@@ -30,7 +30,7 @@ router.post('/login', function(req, res, next) {
           success: true,
           message: 'Enjoy your token!',
           token: token,
-          username: user.name,
+          username: user.username,
           user_id: user.id
 
         });
@@ -87,8 +87,8 @@ router.post('/register', function(req, res, next) {
         res.status(200).json({
             status: "Much Success",
             token: token,
-            username: user.name,
-            user_id: user.user_id
+            username: user.username,
+            user_id: user.id
         });
       });
     }
