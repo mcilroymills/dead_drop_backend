@@ -21,6 +21,7 @@ router.post('/login', function(req, res, next) {
       });
     } else {
       var user = data[0];
+      console.log("user!", user);
       // if password is correct
       if (comparePassword(password, user.password)) {
         var token = jwt.sign(user, process.env.TOKEN_SECRET, {
@@ -31,7 +32,7 @@ router.post('/login', function(req, res, next) {
           message: 'Enjoy your token!',
           token: token,
           username: user.username,
-          user_id: user.id
+          user_id: user.user_id
 
         });
       } else { // password is incorrect
@@ -88,7 +89,7 @@ router.post('/register', function(req, res, next) {
             status: "Much Success",
             token: token,
             username: user.username,
-            user_id: user.id
+            user_id: user.user_id
         });
       });
     }
