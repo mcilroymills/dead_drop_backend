@@ -28,14 +28,16 @@ app.use(function(req, res, next) {
 // *** config middleware *** //
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../client')));
 
 
 // *** main routes *** //
-app.get('/', function(req,res,next) {
-    res.sendFile(path.join(__dirname, '../client/app', 'index.html'));
+app.get('/', function(req, res, next) {
+  res.sendFile(path.join(__dirname, '../client/app', 'index.html'));
 });
 
 //route to authenticate a user, no token needed
@@ -53,8 +55,11 @@ app.use(function(req, res, next) {
     // verifies secret and checks exp
     jwt.verify(JSON.parse(token), process.env.TOKEN_SECRET, function(err, decoded) {
       if (err) {
-        console.log("err in verify",err);
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
+        console.log("err in verify", err);
+        return res.json({
+          success: false,
+          message: 'Failed to authenticate token.'
+        });
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
@@ -65,8 +70,8 @@ app.use(function(req, res, next) {
     // if there is no token
     // return an error
     return res.status(403).send({
-        success: false,
-        message: 'No token provided.!!'
+      success: false,
+      message: 'No token provided.!!'
     });
   }
 });
@@ -105,6 +110,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

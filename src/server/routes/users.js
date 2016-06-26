@@ -8,12 +8,10 @@ var jwt = require('jsonwebtoken');
 router.post('/login', function(req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
-  console.log("in back-end login route!!!");
   // ensure that user exists
   knex('users').where('email', email)
   .then(function(data) {
     // if username does not exist
-    console.log("knex return data after login post:", data);
     if (!data.length) {
       return res.status(401).json({
       status: 'fail',
@@ -21,7 +19,6 @@ router.post('/login', function(req, res, next) {
       });
     } else {
       var user = data[0];
-      console.log("user!", user);
       // if password is correct
       if (comparePassword(password, user.password)) {
         var token = jwt.sign(user, process.env.TOKEN_SECRET, {
@@ -75,7 +72,6 @@ router.post('/register', function(req, res, next) {
         banned: false
       }, '*')
       .then(function(data) {
-        console.log("returned data from knex insert", data);
         var user = {
           username: username,
           email: email,
@@ -86,7 +82,7 @@ router.post('/register', function(req, res, next) {
           expiresIn: 6000
         });
         res.status(200).json({
-            status: "Much Success",
+            status: "Success",
             token: token,
             username: user.username,
             user_id: user.user_id
@@ -103,7 +99,6 @@ router.post('/register', function(req, res, next) {
 
 // hashes a given password
 function hashPassword (password) {
-  console.log("hashing password ", password);
   var salt = bcrypt.genSaltSync(10);
   return bcrypt.hashSync(password, salt);
 }
