@@ -18,11 +18,27 @@ var users = require('./routes/users.js');
 // *** express instance *** //
 var app = express();
 
-//CORS middleware
+// CORS middleware
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+  var headers = {};
+
+  // if req is a preflight options request
+  if ( req.method === 'OPTIONS' ) {
+
+    // set header to handle CORS
+    headers['Access-Control-Allow-Origin'] = '*';
+    headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, x-access-token';
+    headers['Access-Contrl-Allow-Methods'] = 'PUT, POST, GET, DELETE, OPTIONS';
+    headers["Access-Control-Max-Age"] = '86400';
+    res.writeHead(200, headers);
+    res.end();
+  }
+  else {// else all regular reqs
+    // set header to handle CORS
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, x-access-token');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+  }
 });
 
 // *** config middleware *** //
@@ -47,16 +63,13 @@ app.use('/users', users);
 app.use(function(req, res, next) {
 
   // check header or url parameters or post parameters for token
-  //var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'] || req.query['x-access-token'];
+  var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'];
 
-  var token = req.query['x-access-token'] || req.body.token || req.query.token || req.headers['x-access-token'] || req.body.headers['x-access-token'];
-  console.log("tooken:",token);
   // decode token
   if (token) {
     // verifies secret and checks exp
     jwt.verify(JSON.parse(token), process.env.TOKEN_SECRET, function(err, decoded) {
       if (err) {
-        console.log("err in verify", err);
         return res.json({
           success: false,
           message: 'Failed to authenticate token.'
@@ -86,7 +99,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
 
 // *** error handlers *** //
 
